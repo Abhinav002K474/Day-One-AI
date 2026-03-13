@@ -1,0 +1,96 @@
+╔══════════════════════════════════════════════════════════════╗
+║          🎓 DAY ONE AI - QUICK REFERENCE CARD 🎓            ║
+╚══════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────┐
+│ ⚡ 3-STEP STARTUP (EVERY TIME)                                │
+└──────────────────────────────────────────────────────────────┘
+
+  1️⃣  Start MySQL in XAMPP
+      → Open XAMPP Control Panel
+      → Click "Start" for MySQL
+      → Apache NOT needed!
+
+  2️⃣  Run: START_BACKEND.bat
+      → Double-click the file
+      → Server starts on port 5000
+
+  3️⃣  Open: index.html
+      → Double-click in File Explorer
+      → Works immediately!
+
+┌──────────────────────────────────────────────────────────────┐
+│ 📍 PORTS & URLs                                               │
+└──────────────────────────────────────────────────────────────┘
+
+  Frontend:  file:///c:/Users/.../index.html
+  Backend:   http://localhost:5000
+  MySQL:     localhost:3306
+
+┌──────────────────────────────────────────────────────────────┐
+│ 🧪 TEST CREDENTIALS                                           │
+└──────────────────────────────────────────────────────────────┘
+
+  Email:     deepak@gmail.com
+  Password:  password
+  Role:      Student
+
+  Admin:     admin123 (admin.html)
+
+┌──────────────────────────────────────────────────────────────┐
+│ 🔥 TROUBLESHOOTING                                            │
+└──────────────────────────────────────────────────────────────┘
+
+  ❌ Backend not running?
+     → Check if MySQL is green in XAMPP
+     → Run START_BACKEND.bat again
+
+  ❌ Login not working?
+     → cd backend
+     → node force_create_user.js
+
+  ❌ Database errors?
+     → cd backend  
+     → node setup_db_fixed.js
+
+  ❌ Port 5000 in use?
+     → netstat -ano | findstr :5000
+     → Kill the process
+     → OR change PORT in backend/server.js
+
+┌──────────────────────────────────────────────────────────────┐
+│ ✅ WHAT'S DIFFERENT (STABLE ARCHITECTURE)                     │
+└──────────────────────────────────────────────────────────────┘
+
+  ✓ No hardcoded localhost URLs
+  ✓ All API calls use relative paths: /api/login
+  ✓ Works on ANY environment (demo, LAN, production)
+  ✓ Backend on clear port 5000 (not 3000)
+  ✓ No frontend server needed
+  ✓ Just HTML files - open and go!
+
+┌──────────────────────────────────────────────────────────────┐
+│ 📁 KEY FILES                                                  │
+└──────────────────────────────────────────────────────────────┘
+
+  index.html         → Main dashboard (Student/Teacher/Parent)
+  admin.html         → Admin portal
+  pdf_viewer.html    → PDF viewer with AI summary
+  START_BACKEND.bat  → Quick backend launcher
+  STARTUP_GUIDE.md   → Full documentation
+
+┌──────────────────────────────────────────────────────────────┐
+│ 🎯 FOR FINAL YEAR PROJECT SUBMISSION                          │
+└──────────────────────────────────────────────────────────────┘
+
+  This setup is EXAM-SAFE because:
+  
+  ✓ No external dependencies for frontend
+  ✓ Works offline (except AI features)
+  ✓ Single backend process (easy to demo)
+  ✓ No build scripts or complex setup
+  ✓ Environment-independent (works anywhere)
+
+╔══════════════════════════════════════════════════════════════╗
+║  📖 Full Docs: Read STARTUP_GUIDE.md                         ║
+╚══════════════════════════════════════════════════════════════╝

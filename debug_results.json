@@ -1,0 +1,81 @@
+{
+  "assessments": [
+    {
+      "id": 19,
+      "title": "Maths MCQ",
+      "class": "10A",
+      "subject": "Mathematics",
+      "status": "PUBLISHED",
+      "created_at": "2026-01-28T06:55:53.000Z"
+    },
+    {
+      "id": 18,
+      "title": "Maths MCQ",
+      "class": "10A",
+      "subject": "Mathematics",
+      "status": "PUBLISHED",
+      "created_at": "2026-01-28T06:42:29.000Z"
+    },
+    {
+      "id": 17,
+      "title": "Maths MCQ",
+      "class": "10A",
+      "subject": "Mathematics",
+      "status": "PUBLISHED",
+      "created_at": "2026-01-28T06:29:20.000Z"
+    },
+    {
+      "id": 16,
+      "title": "Maths MCQ",
+      "class": "10A",
+      "subject": "Mathematics",
+      "status": "PUBLISHED",
+      "created_at": "2026-01-27T15:00:24.000Z"
+    },
+    {
+      "id": 15,
+      "title": "Maths MCQ",
+      "class": "10A",
+      "subject": "Mathematics",
+      "status": "PUBLISHED",
+      "created_at": "2026-01-27T14:30:23.000Z"
+    }
+  ],
+  "students": [
+    {
+      "id": 1,
+      "name": "Emergency User",
+      "email": "test@test.com",
+      "role": "student",
+      "class": "Class 10"
+    },
+    {
+      "id": 3,
+      "name": "Deepak Student",
+      "email": "deepak@gmail.com",
+      "role": "student",
+      "class": "Class 10"
+    },
+    {
+      "id": 4,
+      "name": "Abhinav",
+      "email": "sanjay2@gmail.com",
+      "role": "student",
+      "class": null
+    },
+    {
+      "id": 5,
+      "name": "Abhinav",
+      "email": "sanjay3@gmail.com",
+      "role": "student",
+      "class": null
+    },
+    {
+      "id": 6,
+      "name": "Abhinav",
+      "email": "Vikram1@gmail.com",
+      "role": "student",
+      "class": null
+    }
+  ]
+}

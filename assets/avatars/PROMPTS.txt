@@ -1,0 +1,54 @@
+READY-TO-USE AI PROMPTS (IMPORTANT)
+
+You can use these in any AI image generator.
+
+🔹 Base Prompt Template (Reuse This)
+A semi-realistic digital portrait of a <ROLE>, 
+professional and modern style, 
+soft studio lighting, 
+dark blurred background, 
+calm confident expression, 
+high detail, 
+front-facing, 
+cinematic quality, 
+no cartoon, no anime, no exaggeration
+
+🧑💻 Programmer Prompt
+A semi-realistic digital portrait of a programmer,
+wearing a modern hoodie, subtle code reflections,
+soft purple-blue lighting,
+dark blurred background,
+professional and futuristic style,
+high detail, cinematic quality
+
+🩺 Doctor Prompt
+A semi-realistic digital portrait of a doctor,
+wearing a white coat and stethoscope,
+clean medical aesthetic,
+soft white lighting,
+professional hospital environment,
+high detail, realistic human face
+
+🎮 Gamer Prompt
+A semi-realistic digital portrait of a gamer,
+wearing a headset,
+subtle RGB lighting,
+dark background with neon accents,
+modern e-sports style,
+realistic human features
+
+⚙ Engineer Prompt
+A semi-realistic digital portrait of an engineer,
+smart formal attire,
+technical background hints,
+cool neutral lighting,
+professional and confident,
+high detail realistic style
+
+🧑🏫 Teacher Prompt
+A semi-realistic digital portrait of a teacher,
+smart casual outfit,
+warm lighting,
+friendly and calm expression,
+professional academic style,
+realistic human portrait
