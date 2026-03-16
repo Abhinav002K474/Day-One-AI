@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AI Learning Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/authGuard.js"></script>
+</head>
+
+<body>
+    <h1>Welcome to Dashboard</h1>
+    <p>This page is protected.</p>
+
+    <!-- AI Question Generation Section -->
+    <div class="section">
+        <h2>AI Question Generation</h2>
+        <textarea id="inputText" placeholder="Enter topic" rows="4" cols="50"></textarea>
+        <br>
+        <button onclick="generateQuestions()">Generate Questions</button>
+        <pre id="output"></pre>
+    </div>
+
+    <!-- Study Material Upload Section -->
+    <div class="section">
+        <h2>Upload Study Material</h2>
+        <input type="file" id="file">
+        <input type="text" id="subject" placeholder="Subject">
+        <input type="text" id="class" placeholder="Class">
+        <button onclick="uploadMaterial()">Upload</button>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/generateQuestions.js"></script>
+    <script src="js/uploadMaterial.js"></script>
+</body>
+
+</html>
