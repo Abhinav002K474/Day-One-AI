@@ -1,0 +1,57 @@
+{
+  "title": "Math One Marks",
+  "subject": "Mathematics",
+  "class": "10",
+  "type": "MCQ",
+  "markPerQuestion": 1,
+  "totalQuestions": 40,
+  "questions": [
+    { "id": 1, "question": "If n(A) = 6 and B = {1,3}, then n(A × B) is", "options": ["6", "12", "18", "3"], "answer": 1 },
+    { "id": 2, "question": "If two ordered pairs (x, y) and (2, −2) are equal, then (x, y) is", "options": ["(5, 1)", "(2, −2)", "(2, 3)", "(3, −2)"], "answer": 1 },
+    { "id": 3, "question": "The number of relations from a set with 2 elements to a set with 3 elements is", "options": ["6", "8", "64", "9"], "answer": 2 },
+    { "id": 4, "question": "A function which maps every element to itself is called", "options": ["One–one", "Onto", "Identity", "Many–one"], "answer": 2 },
+    { "id": 5, "question": "If a function is both one–one and onto, it is called", "options": ["Identity", "Bijective", "Into", "Constant"], "answer": 1 },
+
+    { "id": 6, "question": "The HCF of the least prime number and the least composite number is", "options": ["1", "2", "3", "4"], "answer": 1 },
+    { "id": 7, "question": "The remainder when the cube of any integer is divided by 9 is", "options": ["0, 1, 8", "1, 4, 8", "0, 3, 6", "2, 5, 7"], "answer": 0 },
+    { "id": 8, "question": "The 10th term of an A.P. with first term 1 and common difference 4 is", "options": ["36", "37", "40", "41"], "answer": 1 },
+    { "id": 9, "question": "The number of terms in the G.P. 5, 20, 80, … , 20480 is", "options": ["6", "7", "8", "9"], "answer": 1 },
+    { "id": 10, "question": "The sum of the first n natural numbers is", "options": ["n²", "n(n+1)", "n(n+1)/2", "n²/2"], "answer": 2 },
+
+    { "id": 11, "question": "A system of linear equations is inconsistent if the lines", "options": ["intersect at one point", "intersect at two points", "are parallel", "coincide"], "answer": 2 },
+    { "id": 12, "question": "The graph of a linear polynomial is a", "options": ["Circle", "Parabola", "Straight line", "Hyperbola"], "answer": 2 },
+    { "id": 13, "question": "The number of zeroes of a quadratic polynomial is at most", "options": ["1", "2", "3", "0"], "answer": 1 },
+    { "id": 14, "question": "The discriminant of the equation x² − 4x + 4 = 0 is", "options": ["0", "4", "8", "16"], "answer": 0 },
+    { "id": 15, "question": "The order of a matrix with 3 rows and 2 columns is", "options": ["2 × 3", "3 × 2", "3 × 3", "2 × 2"], "answer": 1 },
+
+    { "id": 16, "question": "Two triangles are similar if their corresponding angles are", "options": ["equal", "supplementary", "right angles", "unequal"], "answer": 0 },
+    { "id": 17, "question": "The ratio of the areas of two similar triangles is equal to", "options": ["ratio of sides", "square of ratio of sides", "cube of ratio of sides", "ratio of heights"], "answer": 1 },
+    { "id": 18, "question": "The angle between a tangent and radius at the point of contact is", "options": ["0°", "45°", "90°", "180°"], "answer": 2 },
+    { "id": 19, "question": "The number of tangents drawn from an external point to a circle is", "options": ["1", "2", "3", "Infinite"], "answer": 1 },
+    { "id": 20, "question": "The distance between the tops of two poles of heights 6 m and 11 m standing 12 m apart is", "options": ["13 m", "14 m", "15 m", "12 m"], "answer": 2 },
+
+    { "id": 21, "question": "The distance between the points (0,0) and (3,4) is", "options": ["4", "5", "6", "7"], "answer": 1 },
+    { "id": 22, "question": "The slope of a line parallel to the x-axis is", "options": ["1", "−1", "0", "∞"], "answer": 2 },
+    { "id": 23, "question": "The equation of a line parallel to the y-axis is", "options": ["y = mx + c", "x = a", "y = a", "ax + by = 0"], "answer": 1 },
+    { "id": 24, "question": "Three points are collinear if the area of the triangle formed by them is", "options": ["maximum", "minimum", "zero", "non-zero"], "answer": 2 },
+    { "id": 25, "question": "The slope of a line perpendicular to a line of slope m is", "options": ["m", "−m", "1/m", "−1/m"], "answer": 3 },
+
+    { "id": 26, "question": "The value of sin 30° is", "options": ["0", "1", "1/2", "√3/2"], "answer": 2 },
+    { "id": 27, "question": "If tan θ = 1, then θ is", "options": ["30°", "45°", "60°", "90°"], "answer": 1 },
+    { "id": 28, "question": "The angle of elevation when the height and shadow are equal is", "options": ["30°", "45°", "60°", "90°"], "answer": 1 },
+    { "id": 29, "question": "The value of sin²60° + cos²60° is", "options": ["0", "1", "2", "1/2"], "answer": 1 },
+    { "id": 30, "question": "If sin θ = 0, then θ is", "options": ["0°", "30°", "45°", "60°"], "answer": 0 },
+
+    { "id": 31, "question": "The curved surface area of a cylinder is", "options": ["2πr²", "πr²h", "2πrh", "πrh"], "answer": 2 },
+    { "id": 32, "question": "The volume of a cone is", "options": ["πr²h", "1/3 πr²h", "2πrh", "πr²"], "answer": 1 },
+    { "id": 33, "question": "The total surface area of a sphere is", "options": ["2πr²", "3πr²", "4πr²", "6πr²"], "answer": 2 },
+    { "id": 34, "question": "If the radius of a sphere is doubled, its volume becomes", "options": ["2 times", "4 times", "6 times", "8 times"], "answer": 3 },
+    { "id": 35, "question": "The shape of a shuttle cock is", "options": ["Cone and sphere", "Cylinder and cone", "Hemisphere and cone", "Sphere and cylinder"], "answer": 2 },
+
+    { "id": 36, "question": "The range of the data 5, 5, 5, 5, 5 is", "options": ["0", "5", "1", "10"], "answer": 0 },
+    { "id": 37, "question": "The sum of deviations of observations from their mean is", "options": ["positive", "negative", "zero", "non-zero"], "answer": 2 },
+    { "id": 38, "question": "The probability of a sure event is", "options": ["0", "1", "1/2", "−1"], "answer": 1 },
+    { "id": 39, "question": "The probability of an impossible event is", "options": ["1", "0", "−1", "1/2"], "answer": 1 },
+    { "id": 40, "question": "If a coin is tossed once, the probability of getting a head is", "options": ["0", "1", "1/2", "1/4"], "answer": 2 }
+  ]
+}

@@ -205,3 +205,4 @@ sessions/
 #
 # Before committing, always review with: git status
 .vercel
+.env*.local
