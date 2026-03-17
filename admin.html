@@ -547,7 +547,17 @@
                         body: formData
                     });
 
-                    const result = await response.json();
+                    const rawText = await response.text();
+                    let result;
+                    try {
+                        result = JSON.parse(rawText);
+                    } catch (e) {
+                        if (response.status === 413) {
+                            throw new Error("File too large for Vercel Serverless! Please upload a PDF under 4.5 MB.");
+                        } else {
+                            throw new Error("Server error (Vercel): " + response.statusText);
+                        }
+                    }
 
                     status.classList.remove('hidden');
                     if (result.success) {
