@@ -5,7 +5,6 @@ const pdf = require('pdf-parse');
 const { summarizeText } = require('../services/summarizer.client');
 const db = require('../db');
 const { createClient } = require('@supabase/supabase-js');
-const fetch = require('node-fetch');
 
 // Initialize Supabase Client dynamically
 const supabaseUrl = process.env.SUPABASE_URL;
