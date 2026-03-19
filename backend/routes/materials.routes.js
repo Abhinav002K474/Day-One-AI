@@ -4,23 +4,19 @@ const multer = require('multer');
 const pdf = require('pdf-parse');
 const { summarizeText } = require('../services/summarizer.client');
 const db = require('../db');
+const { createClient } = require('@supabase/supabase-js');
+const fetch = require('node-fetch');
 
-// ✅ Use memory storage — works on Vercel (no disk writes)
+// Initialize Supabase Client dynamically
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY; // Service Role Key allows everything
+const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+
 const upload = multer({
     storage: multer.memoryStorage(),
-    limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB max
-    fileFilter: (req, file, cb) => {
-        if (file.mimetype === 'application/pdf') {
-            cb(null, true);
-        } else {
-            cb(new Error('Only PDF files are allowed'));
-        }
-    }
+    limits: { fileSize: 50 * 1024 * 1024 }
 });
 
-// ------------------------------------------------------------------
-// DB SETUP: Ensure study_materials table exists
-// ------------------------------------------------------------------
 async function ensureTable() {
     await db.pool.query(`
         CREATE TABLE IF NOT EXISTS study_materials (
@@ -28,70 +24,89 @@ async function ensureTable() {
             title TEXT NOT NULL,
             subject TEXT NOT NULL,
             class TEXT NOT NULL,
-            file_data BYTEA NOT NULL,
+            file_data BYTEA,
             file_name TEXT NOT NULL,
             uploaded_by TEXT DEFAULT 'admin',
             is_active BOOLEAN DEFAULT TRUE,
-            created_at TIMESTAMPTZ DEFAULT NOW()
+            created_at TIMESTAMPTZ DEFAULT NOW(),
+            storage_path TEXT
         )
     `);
 }
 ensureTable().catch(err => console.error('study_materials table init error:', err));
 
 // ------------------------------------------------------------------
-// ADMIN: Upload Study Material → stored in PostgreSQL
-// POST /api/admin/study-material/upload
+// 1. GET SIGNED UPLOAD URL (Bypasses Vercel 4.5MB limit)
 // ------------------------------------------------------------------
-router.post('/admin/study-material/upload', (req, res, next) => {
-    upload.single('pdfFile')(req, res, (err) => {
-        if (err) {
-            if (err.code === 'LIMIT_FILE_SIZE') {
-                return res.status(400).json({ success: false, error: 'File too large. Max is 50MB.' });
-            }
-            return res.status(400).json({ success: false, error: err.message });
-        }
-        next();
-    });
-}, async (req, res) => {
+router.post('/admin/study-material/get-upload-url', async (req, res) => {
     try {
-        // Role check
-        const userRole = req.headers['x-user-role'];
-        if (userRole !== 'admin') {
-            return res.status(403).json({ success: false, error: 'Access Denied: Admins only' });
+        if (!supabase) return res.status(500).json({ error: "Supabase not configured in .env" });
+        if (req.headers['x-user-role'] !== 'admin') return res.status(403).json({ error: "Admins only" });
+
+        const { fileName } = req.body;
+        if (!fileName) return res.status(400).json({ error: "fileName required" });
+
+        const safeName = `${Date.now()}_${fileName.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+
+        // Create a signed upload URL valid for 10 minutes
+        const { data, error } = await supabase.storage
+            .from('study-materials')
+            .createSignedUploadUrl(safeName);
+
+        if (error) {
+            console.error('Supabase Signed URL Error:', error);
+            return res.status(500).json({ error: error.message });
         }
 
-        const { class: className, subject, title, uploadedBy } = req.body;
-        const file = req.file;
+        res.json({ success: true, signedUrl: data.signedUrl, path: data.path });
+    } catch (err) {
+        console.error("Get Upload URL Error:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
-        if (!className || !subject || !title || !file) {
-            return res.status(400).json({ success: false, error: 'Missing required fields: class, subject, title, and PDF file.' });
+// ------------------------------------------------------------------
+// 2. CONFIRM UPLOAD & SAVE TO DATABASE
+// ------------------------------------------------------------------
+router.post('/admin/study-material/confirm-upload', async (req, res) => {
+    try {
+        if (req.headers['x-user-role'] !== 'admin') return res.status(403).json({ error: "Admins only" });
+
+        const { class: className, subject, title, path, fileName } = req.body;
+        
+        if (!className || !subject || !title || !path) {
+            return res.status(400).json({ error: 'Missing metadata required for DB insertion' });
         }
 
         const materialId = `mat_${Date.now()}`;
 
         await db.pool.query(
-            `INSERT INTO study_materials (id, title, subject, class, file_data, file_name, uploaded_by)
+            `INSERT INTO study_materials (id, title, subject, class, file_name, storage_path, uploaded_by)
              VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-            [materialId, title, subject, className, file.buffer, file.originalname, uploadedBy || 'admin']
+            [materialId, title, subject, className, fileName || 'Unknown PDF', path, 'admin_dashboard']
         );
 
-        console.log(`[Upload] ✅ Saved to DB: ${materialId} - ${title}`);
+        res.json({ success: true, message: 'Study material uploaded & indexed successfully', data: { id: materialId } });
 
-        res.json({
-            success: true,
-            message: 'Study material uploaded successfully',
-            data: { id: materialId, title, subject, class: className }
-        });
+        // Trigger indexing securely in background
+        const { indexDocument } = require('../services/studyMaterialIndex.service');
+        const fileUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/study-materials/${path}`;
+        
+        console.log("Downloading from Supabase for indexing...");
+        fetch(fileUrl).then(response => response.buffer()).then(buffer => {
+            const tempFsPath = require('path').join(require('os').tmpdir(), fileName);
+            require('fs').writeFileSync(tempFsPath, buffer);
+            indexDocument(tempFsPath, { subject, class_level: className }).catch(e => console.error(e));
+        }).catch(e => console.error("Background fetch for index failed:", e));
 
-    } catch (error) {
-        console.error('Admin Upload Error:', error);
-        res.status(500).json({ success: false, error: 'Internal Server Error during upload: ' + error.message });
+    } catch (err) {
+        console.error("Confirm Upload Error:", err);
+        res.status(500).json({ error: "Database save failed" });
     }
 });
 
 // ------------------------------------------------------------------
-// STUDENT: List Materials (Filtered by Subject)
-// GET /api/student/study-materials?subject=Tamil
+// STUDENT: List Materials
 // ------------------------------------------------------------------
 router.get('/student/study-materials', async (req, res) => {
     const subject = req.query.subject;
@@ -99,7 +114,7 @@ router.get('/student/study-materials', async (req, res) => {
 
     try {
         const result = await db.pool.query(
-            `SELECT id, title, subject, class, uploaded_by, created_at
+            `SELECT id, title, subject, class, uploaded_by, created_at, storage_path
              FROM study_materials
              WHERE LOWER(subject) = LOWER($1) AND is_active = TRUE
              ORDER BY created_at DESC`,
@@ -113,42 +128,53 @@ router.get('/student/study-materials', async (req, res) => {
             class: row.class,
             uploadedBy: row.uploaded_by,
             createdAt: row.created_at,
-            // Build the viewer URL
+            // Point directly to view route to handle both old BYTEA and new Supabase Storage methods transparently
             filePath: `/api/student/study-materials/view/${row.id}`
         }));
 
         res.json({ success: true, materials });
-
     } catch (err) {
-        console.error('Fetch Materials Error:', err);
         res.status(500).json({ success: false, error: 'Failed to fetch materials' });
     }
 });
 
 // ------------------------------------------------------------------
-// STUDENT: Stream / View a PDF by ID
-// GET /api/student/study-materials/view/:materialId
+// STUDENT: Stream / View PDF (Supports both BYTEA and Supabase URL)
 // ------------------------------------------------------------------
 router.get('/student/study-materials/view/:materialId', async (req, res) => {
     const materialId = req.params.materialId;
 
     try {
         const result = await db.pool.query(
-            `SELECT title, file_data, file_name FROM study_materials WHERE id = $1 AND is_active = TRUE`,
+            `SELECT title, file_data, file_name, storage_path FROM study_materials WHERE id = $1 AND is_active = TRUE`,
             [materialId]
         );
 
-        if (result.rows.length === 0) {
-            return res.status(404).send('Material not found');
+        if (result.rows.length === 0) return res.status(404).send('Material not found');
+
+        const { title, file_data, file_name, storage_path } = result.rows[0];
+
+        // 1. If it's a recently uploaded Supabase File
+        if (storage_path && supabaseUrl) {
+            const publicUrl = `${supabaseUrl}/storage/v1/object/public/study-materials/${storage_path}`;
+            // Fetch dynamically and pipe to keep URL native or act as a transparent proxy
+            const fileRes = await fetch(publicUrl);
+            if (!fileRes.ok) return res.status(404).send("Supabase file missing");
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `inline; filename="${title || file_name}.pdf"`);
+            return fileRes.body.pipe(res);
         }
 
-        const { title, file_data, file_name } = result.rows[0];
-        const buffer = Buffer.from(file_data);
+        // 2. If it's a legacy file stored natively in PG BYTEA
+        if (file_data) {
+            const buffer = Buffer.from(file_data);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `inline; filename="${title || file_name}.pdf"`);
+            res.setHeader('Content-Length', buffer.length);
+            return res.send(buffer);
+        }
 
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `inline; filename="${title || file_name}.pdf"`);
-        res.setHeader('Content-Length', buffer.length);
-        res.send(buffer);
+        res.status(404).send("File content empty");
 
     } catch (err) {
         console.error('Stream Material Error:', err);
@@ -157,50 +183,7 @@ router.get('/student/study-materials/view/:materialId', async (req, res) => {
 });
 
 // ------------------------------------------------------------------
-// STUDENT + TEACHER: General Upload (legacy route kept for compat)
-// POST /api/upload/study-material
-// ------------------------------------------------------------------
-router.post('/upload/study-material', (req, res, next) => {
-    upload.single('file')(req, res, (err) => {
-        if (err) return res.status(400).json({ success: false, message: err.message });
-        next();
-    });
-}, async (req, res) => {
-    try {
-        const authHeader = req.headers['authorization'];
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ success: false, message: 'Unauthorized: Token required' });
-        }
-
-        const file = req.file;
-        if (!file) return res.status(400).json({ success: false, message: 'No file uploaded' });
-
-        const materialId = `mat_${Date.now()}`;
-        const title = req.body.title || file.originalname;
-        const subject = req.body.subject || 'General';
-        const className = req.body.class || 'All';
-
-        await db.pool.query(
-            `INSERT INTO study_materials (id, title, subject, class, file_data, file_name, uploaded_by)
-             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-            [materialId, title, subject, className, file.buffer, file.originalname, req.body.uploadedBy || 'user']
-        );
-
-        res.json({
-            success: true,
-            message: 'Study material uploaded successfully',
-            data: { id: materialId, title, subject, class: className }
-        });
-
-    } catch (err) {
-        console.error('[Upload] ❌ Error:', err.message);
-        res.status(500).json({ success: false, message: 'Upload failed: ' + err.message });
-    }
-});
-
-// ------------------------------------------------------------------
 // AI: Summarize Material
-// POST /api/pdf/summarize
 // ------------------------------------------------------------------
 router.post('/pdf/summarize', async (req, res) => {
     try {
@@ -208,13 +191,25 @@ router.post('/pdf/summarize', async (req, res) => {
         if (!materialId) return res.status(400).json({ success: false, message: 'Material ID required' });
 
         const result = await db.pool.query(
-            `SELECT file_data, title FROM study_materials WHERE id = $1 AND is_active = TRUE`,
+            `SELECT file_data, storage_path FROM study_materials WHERE id = $1 AND is_active = TRUE`,
             [materialId]
         );
 
         if (result.rows.length === 0) return res.status(404).json({ success: false, message: 'Material not found' });
 
-        const buffer = Buffer.from(result.rows[0].file_data);
+        let buffer;
+        const { file_data, storage_path } = result.rows[0];
+
+        if (storage_path && supabaseUrl) {
+            const publicUrl = `${supabaseUrl}/storage/v1/object/public/study-materials/${storage_path}`;
+            const fileRes = await fetch(publicUrl);
+            buffer = await fileRes.buffer();
+        } else if (file_data) {
+            buffer = Buffer.from(file_data);
+        } else {
+             return res.status(404).json({ success: false, message: 'No file content found to summarize' });
+        }
+
         const pdfData = await pdf(buffer);
         const text = pdfData.text.substring(0, 2000);
 
