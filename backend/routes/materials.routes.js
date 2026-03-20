@@ -161,7 +161,10 @@ router.get('/student/study-materials/view/:materialId', async (req, res) => {
             if (!fileRes.ok) return res.status(404).send("Supabase file missing");
             res.setHeader('Content-Type', 'application/pdf');
             res.setHeader('Content-Disposition', `inline; filename="${title || file_name}.pdf"`);
-            return fileRes.body.pipe(res);
+            
+            // Convert Web Stream (native fetch) to Node Stream
+            const { Readable } = require('stream');
+            return Readable.fromWeb(fileRes.body).pipe(res);
         }
 
         // 2. If it's a legacy file stored natively in PG BYTEA
@@ -202,7 +205,8 @@ router.post('/pdf/summarize', async (req, res) => {
         if (storage_path && supabaseUrl) {
             const publicUrl = `${supabaseUrl}/storage/v1/object/public/study-materials/${storage_path}`;
             const fileRes = await fetch(publicUrl);
-            buffer = await fileRes.buffer();
+            // Native Node 18 fetch uses arrayBuffer() instead of node-fetch buffer()
+            buffer = Buffer.from(await fileRes.arrayBuffer());
         } else if (file_data) {
             buffer = Buffer.from(file_data);
         } else {
