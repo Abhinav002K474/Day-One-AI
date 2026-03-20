@@ -602,6 +602,42 @@
             border-radius: 0 0 15px 15px;
             box-shadow: 0 0 10px #22d3ee;
         }
+
+        /* --- SPEAKING ANIMATIONS --- */
+        @keyframes botTalk {
+            0% { height: 6px; border-radius: 0 0 12px 12px; background: transparent; border-bottom: 2px solid #ddd; }
+            50% { height: 16px; width: 18px; border-radius: 8px 8px 14px 14px; background: rgba(34, 211, 238, 0.4); border-bottom: 2px solid #22d3ee; }
+            100% { height: 4px; border-radius: 0 0 10px 10px; background: transparent; border-bottom: 2px solid #ddd; }
+        }
+
+        .ai-bot-wrapper.speaking .smile {
+            animation: botTalk 0.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes swingArmLeftTalk { 
+            0% { transform: rotate(15deg) translateY(0); } 
+            30% { transform: rotate(70deg) translateY(-8px); } 
+            60% { transform: rotate(45deg) translateY(-4px); } 
+            100% { transform: rotate(15deg) translateY(0); } 
+        }
+        @keyframes swingArmRightTalk { 
+            0% { transform: rotate(-15deg) translateY(0); } 
+            40% { transform: rotate(-65deg) translateY(-6px); } 
+            70% { transform: rotate(-35deg) translateY(-2px); } 
+            100% { transform: rotate(-15deg) translateY(0); } 
+        }
+
+        .ai-bot-wrapper.speaking .arm.left {
+            animation: swingArmLeftTalk 1.8s infinite ease-in-out;
+        }
+        .ai-bot-wrapper.speaking .arm.right {
+            animation: swingArmRightTalk 2.2s infinite ease-in-out;
+            animation-delay: 0.4s;
+        }
+
+        .ai-bot-wrapper.speaking .bot {
+            animation: realisticFloat 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; /* More energetic bobbing */
+        }
     </style>
 </head>
 
@@ -658,7 +694,7 @@
             </button>
 
             <!-- Stop Voice Button -->
-            <button class="btn-text-icon" onclick="window.speechSynthesis.cancel()" title="Stop Voice Narration">
+            <button class="btn-text-icon" onclick="stopVoice()" title="Stop Voice Narration">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                     <line x1="23" y1="9" x2="17" y2="15"></line>
@@ -1063,12 +1099,24 @@
             // Stop previous speech
             if (currentUtterance) {
                 window.speechSynthesis.cancel();
+                document.getElementById('ai-bot').classList.remove('speaking');
             }
 
             currentUtterance = new SpeechSynthesisUtterance(text);
             currentUtterance.lang = "ta-IN";
             currentUtterance.rate = 1;
             currentUtterance.pitch = 1;
+
+            // Animate Bot while speaking
+            currentUtterance.onstart = () => {
+                document.getElementById('ai-bot').classList.add('speaking');
+            };
+            currentUtterance.onend = () => {
+                document.getElementById('ai-bot').classList.remove('speaking');
+            };
+            currentUtterance.onerror = () => {
+                document.getElementById('ai-bot').classList.remove('speaking');
+            };
 
             // Attempt to select a Tamil voice if available
             const voices = window.speechSynthesis.getVoices();
@@ -1078,6 +1126,13 @@
             }
 
             window.speechSynthesis.speak(currentUtterance);
+        }
+
+        // Global manual stop button binding
+        function stopVoice() {
+            window.speechSynthesis.cancel();
+            document.getElementById('ai-bot').classList.remove('speaking');
+            currentUtterance = null;
         }
 
         /* --- SUMMARIZE FEATURE --- */
