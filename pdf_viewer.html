@@ -362,133 +362,245 @@
 
         /* AI Assistant Bot Styles */
         .ai-bot-wrapper {
-        position: fixed;
-        bottom: 40px;
-        right: 40px;
-        z-index: 1000;
-        cursor: pointer;
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 1000;
+            cursor: pointer;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));
+            transition: transform 0.3s ease;
         }
 
-        @keyframes botFloat {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-8px); }
-        100% { transform: translateY(0px); }
+        .ai-bot-wrapper:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes realisticFloat {
+            0% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-12px) rotate(2deg); }
+            66% { transform: translateY(-6px) rotate(-1deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
         }
 
         .bot {
-        width: 130px;
-        height: 150px;
-        background: white;
-        border-radius: 35px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        box-shadow: 0 0 20px #c8b6ff, 0 0 40px #b497ff;
-        animation: botFloat 2s infinite ease-in-out;
+            width: 140px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            animation: realisticFloat 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
+        /* Antennas */
+        .bot-antennas {
+            display: flex;
+            justify-content: space-between;
+            width: 65px;
+            margin-bottom: -5px;
+            z-index: 1;
+        }
+        .bot-antenna {
+            width: 8px;
+            height: 22px;
+            background: linear-gradient(to top, #ffffff, #d8b4fe);
+            border-radius: 4px;
+            position: relative;
+            box-shadow: inset -2px -2px 4px rgba(168, 85, 247, 0.4);
+        }
+        .bot-antenna::after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -1px;
+            width: 10px;
+            height: 10px;
+            background: #a855f7;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #22d3ee, inset 1px 1px 2px #fff;
+        }
+
+        /* Head */
         .bot-head {
-        width: 110px;
-        height: 80px;
-        background: #e9ddff;
-        border-radius: 25px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+            width: 135px;
+            height: 95px;
+            background: linear-gradient(135deg, #ffffff 0%, #e9d5ff 100%);
+            border-radius: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset -5px -5px 12px rgba(168, 85, 247, 0.2), 0 8px 20px rgba(0,0,0,0.25), inset 2px 2px 8px #fff;
+            position: relative;
+            z-index: 3;
+            /* Side rounded ears */
+            border-left: 10px solid #d8b4fe;
+            border-right: 10px solid #d8b4fe;
         }
 
+        /* Screen (Cyan Rim) */
         .bot-screen {
-        width: 90px;
-        height: 60px;
-        background: rgba(200, 182, 255, 0.4);
-        border-radius: 15px;
-        -webkit-backdrop-filter: blur(10px);
-        backdrop-filter: blur(10px);
-        box-shadow: inset 0 0 10px #c8b6ff, 0 0 15px #c8b6ff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
+            width: 100px;
+            height: 60px;
+            background: linear-gradient(180deg, #1f2937, #111827);
+            border-radius: 18px;
+            border: 3px solid #67e8f9;
+            box-shadow: 0 0 15px #22d3ee, inset 0 0 25px rgba(34, 211, 238, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
         }
 
         @keyframes botBlink {
-        0%, 90%, 100% { transform: scaleY(1); }
-        95% { transform: scaleY(0.1); }
+            0%, 94%, 100% { transform: scaleY(1); }
+            97% { transform: scaleY(0.1); }
         }
 
+        /* Eyes */
         .eyes {
-        display: flex;
-        gap: 12px;
-        animation: botBlink 3.3s infinite ease-in-out;
+            display: flex;
+            gap: 20px;
+            animation: botBlink 4s infinite;
+            margin-top: -5px;
+            position: relative;
         }
-
         .eye {
-        width: 14px;
-        height: 14px;
-        background: #8b5cf6;
-        border-radius: 50%;
-        box-shadow: 0 0 10px #8b5cf6;
+            width: 25px;
+            height: 25px;
+            background: #000;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: inset -2px -2px 4px rgba(255,255,255,0.2), 0 0 8px #000;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* Pink neon pupil */
+        .eye::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border: 3px solid transparent;
+            border-left-color: #f472b6;
+            border-top-color: #f472b6;
+            border-radius: 50%;
+            transform: rotate(-45deg) translate(-1px, 1px);
+            box-shadow: inset 2px 2px 6px #ec4899;
+            filter: drop-shadow(0 0 4px #ec4899);
         }
 
+        /* Smile */
+        .smile {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 6px;
+            border-bottom: 2px solid #ddd;
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* Body & Arms Section */
+        .bot-lower {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            margin-top: -10px;
+            width: 100%;
+        }
+        
+        .bot-body {
+            width: 80px;
+            height: 65px;
+            background: linear-gradient(to bottom, #f3e8ff, #ffffff);
+            border-radius: 25px;
+            box-shadow: inset -4px -4px 10px rgba(168, 85, 247, 0.3), inset 2px 2px 5px #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Purple Collar */
+        .bot-body::before {
+            content: '';
+            width: 60px;
+            height: 12px;
+            background: linear-gradient(to right, #a855f7, #c084fc);
+            border-radius: 0 0 10px 10px;
+            margin-bottom: 8px;
+            box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Body Glowing Slit */
+        .bot-body-slit {
+            width: 28px;
+            height: 6px;
+            background: #22d3ee;
+            border-radius: 10px;
+            box-shadow: 0 0 12px #22d3ee, inset 0 0 4px #fff;
+        }
+
+        /* Arms */
+        @keyframes swingArmLeft { 0%, 100% { transform: rotate(15deg); } 50% { transform: rotate(30deg); } }
+        @keyframes swingArmRight { 0%, 100% { transform: rotate(-15deg); } 50% { transform: rotate(-30deg); } }
+        
         .arm {
-        width: 20px;
-        height: 65px;
-        background: #c8b6ff;
-        border-radius: 20px;
-        position: absolute;
-        top: 45px;
-        transform-origin: top center;
+            width: 28px;
+            height: 60px;
+            background: linear-gradient(to bottom, #e9d5ff, #ffffff);
+            border-radius: 14px;
+            position: absolute;
+            top: 5px;
+            transform-origin: top center;
+            z-index: 1;
+            box-shadow: inset -3px -3px 8px rgba(168, 85, 247, 0.3), 0 5px 10px rgba(0,0,0,0.15);
+            /* Glowing hands */
+            border-bottom: 8px solid #22d3ee;
         }
-
-        @keyframes swingArmLeft {
-        0%, 100% { transform: rotate(-25deg); }
-        50% { transform: rotate(25deg); }
-        }
-
         .arm.left {
-        left: -18px;
-        animation: swingArmLeft 1s infinite ease-in-out;
+            left: 10px;
+            animation: swingArmLeft 2s infinite ease-in-out;
+            transform: rotate(20deg);
         }
-
-        @keyframes swingArmRight {
-        0%, 100% { transform: rotate(25deg); }
-        50% { transform: rotate(-25deg); }
-        }
-
         .arm.right {
-        right: -18px;
-        animation: swingArmRight 1s infinite ease-in-out;
+            right: 10px;
+            animation: swingArmRight 2s infinite ease-in-out;
+            transform: rotate(-20deg);
         }
 
+        /* Legs */
+        .legs {
+            display: flex;
+            gap: 16px;
+            margin-top: -12px;
+            z-index: 1;
+        }
         .leg {
-        width: 22px;
-        height: 45px;
-        background: #c8b6ff;
-        border-radius: 20px;
-        position: absolute;
-        bottom: -30px;
-        transform-origin: top center;
+            width: 28px;
+            height: 38px;
+            background: linear-gradient(to bottom, #d8b4fe, #ffffff);
+            border-radius: 10px 10px 15px 15px;
+            box-shadow: inset -3px 0 6px rgba(168, 85, 247, 0.3), 0 5px 8px rgba(0,0,0,0.2);
+            position: relative;
         }
-
-        @keyframes swingLegLeft {
-        0%, 100% { transform: rotate(-10deg); }
-        50% { transform: rotate(15deg); }
-        }
-
-        .leg.left {
-        left: 32px;
-        animation: swingLegLeft 0.8s infinite ease-in-out;
-        }
-
-        @keyframes swingLegRight {
-        0%, 100% { transform: rotate(15deg); }
-        50% { transform: rotate(-10deg); }
-        }
-
-        .leg.right {
-        right: 32px;
-        animation: swingLegRight 0.8s infinite ease-in-out;
+        /* Glowing shoes */
+        .leg::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: #22d3ee;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 0 10px #22d3ee;
         }
     </style>
 </head>
@@ -594,26 +706,40 @@
         <div id="pdf-wrapper"></div>
     </div>
 
-    <!-- AI Assistant Bot -->
+    <!-- AI Assistant Bot (Realistic 3D Style) -->
     <div class="ai-bot-wrapper" id="ai-bot" title="Need help? Click Summarize above!" onclick="toggleSummarize()">
         <div class="bot">
+            <!-- Antennas -->
+            <div class="bot-antennas">
+                <div class="bot-antenna"></div>
+                <div class="bot-antenna"></div>
+            </div>
             <!-- Head -->
             <div class="bot-head">
-                <!-- Glass Face -->
+                <!-- Glowing Cyan Screen -->
                 <div class="bot-screen">
-                    <!-- Eyes -->
                     <div class="eyes">
                         <div class="eye"></div>
                         <div class="eye"></div>
                     </div>
+                    <div class="smile"></div>
                 </div>
             </div>
-            <!-- Arms -->
-            <div class="arm left"></div>
-            <div class="arm right"></div>
+            
+            <!-- Lower Section: Body & Arms -->
+            <div class="bot-lower">
+                <div class="arm left"></div>
+                <div class="bot-body">
+                    <div class="bot-body-slit"></div>
+                </div>
+                <div class="arm right"></div>
+            </div>
+            
             <!-- Legs -->
-            <div class="leg left"></div>
-            <div class="leg right"></div>
+            <div class="legs">
+                <div class="leg left"></div>
+                <div class="leg right"></div>
+            </div>
         </div>
     </div>
 
