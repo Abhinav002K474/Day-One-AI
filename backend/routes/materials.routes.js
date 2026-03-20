@@ -225,4 +225,48 @@ router.post('/pdf/summarize', async (req, res) => {
     }
 });
 
+// ------------------------------------------------------------------
+// AI: Ask Doubt Context-Aware Tutor
+// POST /api/ask
+// ------------------------------------------------------------------
+router.post('/ask', async (req, res) => {
+    try {
+        const { question, context } = req.body;
+        if (!question || !context) {
+            return res.status(400).json({ success: false, message: 'Question and Context are required' });
+        }
+
+        const { GoogleGenerativeAI } = require("@google/generative-ai");
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const prompt = `
+You are a highly intelligent and encouraging academic tutor.
+Answer the student's question ONLY using the provided study material page.
+Do NOT use outside general knowledge if the answer cannot be logically deduced from the text.
+If the text does not contain the answer, politely respond that the answer isn't on this specific page.
+
+Study Material Text:
+"""
+${context}
+"""
+
+Student's Question:
+"${question}"
+
+Answer in a simple, clear, student-friendly format.
+`;
+
+        const result = await model.generateContent(prompt);
+        const responseText = result.response.text();
+
+        res.json({ success: true, answer: responseText });
+
+    } catch (err) {
+        console.error('Ask Doubt Error:', err);
+        res.status(500).json({ success: false, message: 'AI Tutor failed to respond' });
+    }
+});
+
 module.exports = router;
+

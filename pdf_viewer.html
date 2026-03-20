@@ -671,6 +671,11 @@
                 Search
             </button>
 
+            <!-- Ask Doubt Button -->
+            <button class="btn-text-icon" id="btn-ask" onclick="toggleDoubtPanel()" title="Ask anything from this page" style="background: rgba(34,211,238,0.1); color: #22d3ee; border: 1px solid rgba(34,211,238,0.2);">
+                <span style="margin-right: 4px;">🤖</span> Ask Doubt
+            </button>
+
             <!-- Summarize Button (New) -->
             <button class="btn-text-icon" id="btn-summarize" onclick="toggleSummarize()" title="Generate Full Summary">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -734,7 +739,30 @@
         <div id="summary-content" class="summary-content">
             <!-- Content will be injected here -->
         </div>
+    </div>
 
+    <!-- Doubt Panel -->
+    <div id="doubt-panel" class="summary-panel doubt-panel">
+        <div class="summary-header">
+            <div class="summary-title">
+                <span>🤖 Ask Doubt</span>
+            </div>
+            <button class="summary-close" onclick="toggleDoubtPanel()">✕</button>
+        </div>
+        
+        <div id="doubt-chat-history" class="summary-content" style="height: calc(100% - 130px); margin-bottom: 0; overflow-y: auto; display: flex; flex-direction: column;">
+            <div style="text-align:center; padding: 1rem; color:#94a3b8; font-size: 0.9rem;">
+                <p>Hello! I am your Context-Aware Tutor for this page.</p>
+                <p>Ask me anything from <b>Page <span id="doubt-pg-num">1</span></b>!</p>
+            </div>
+        </div>
+
+        <div style="padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); background: #1e1e2d; display: flex; gap: 10px;">
+            <input type="text" id="doubt-input" placeholder="Why did the seagull fail..."
+                style="flex: 1; padding: 10px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: #151521; color: white; outline: none;"
+                onkeypress="if(event.key === 'Enter') sendDoubt()" />
+            <button onclick="sendDoubt()" style="padding: 10px 15px; background: #22d3ee; color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Ask</button>
+        </div>
     </div>
 
     <div id="viewer-container">
@@ -1133,6 +1161,69 @@
             window.speechSynthesis.cancel();
             document.getElementById('ai-bot').classList.remove('speaking');
             currentUtterance = null;
+        }
+
+        /* --- ASK DOUBT / TUTOR FEATURE --- */
+        
+        function toggleDoubtPanel() {
+            const panel = document.getElementById('doubt-panel');
+            if (panel.classList.contains('active')) {
+                panel.classList.remove('active');
+            } else {
+                panel.classList.add('active');
+                document.getElementById('doubt-pg-num').innerText = state.pageNum;
+            }
+        }
+
+        async function sendDoubt() {
+            const inputField = document.getElementById('doubt-input');
+            const chatHistory = document.getElementById('doubt-chat-history');
+            const question = inputField.value.trim();
+
+            if (!question) return;
+
+            // Add User Question to Chat
+            const userBubble = document.createElement('div');
+            userBubble.style.cssText = "background: #22d3ee; color: #000; padding: 10px; border-radius: 12px 12px 0 12px; margin: 10px 0 10px auto; max-width: 85%; align-self: flex-end;";
+            userBubble.innerText = question;
+            chatHistory.appendChild(userBubble);
+            
+            // Scroll to bottom and clear input
+            inputField.value = '';
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            // Add Bot "Typing" indicator
+            const botBubble = document.createElement('div');
+            botBubble.style.cssText = "background: rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 12px 12px 12px 0; margin: 10px auto 10px 0; max-width: 85%; align-self: flex-start;";
+            botBubble.innerHTML = "<i>Thinking...</i>";
+            chatHistory.appendChild(botBubble);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            // Make API Call
+            try {
+                // Ensure page logic exists, wait until text is available
+                const pageText = await extractCurrentPageText(); 
+
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: question, context: pageText })
+                });
+
+                const data = await response.json();
+                botBubble.innerHTML = data.success ? data.answer.replace(/\\n/g, '<br>') : "Sorry, I ran into an error generating an answer.";
+                
+                // Read text using bot voice
+                if(data.success) {
+                    readText(data.answer);
+                }
+
+            } catch (err) {
+                console.error(err);
+                botBubble.innerHTML = "Connection Error. Please try again later.";
+            }
+
+            chatHistory.scrollTop = chatHistory.scrollHeight;
         }
 
         /* --- SUMMARIZE FEATURE --- */

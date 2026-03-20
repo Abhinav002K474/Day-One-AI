@@ -1,11 +1,11 @@
-from flask import Flask, request, jsonify
-from transformers import pipeline, AutoTokenizer, AutoModelForSeq2SeqLM
-from flask_cors import CORS
+from flask import Flask, request, jsonify  # type: ignore
+from transformers import pipeline, AutoTokenizer, AutoModelForSeq2SeqLM  # type: ignore
+from flask_cors import CORS  # type: ignore
 import re
 import uuid
 import os
-import torch
-from gtts import gTTS
+import torch  # type: ignore
+from gtts import gTTS  # type: ignore
 
 app = Flask(__name__)
 CORS(app)
@@ -99,8 +99,11 @@ def summarize():
             print("Detected Tamil Text")
             tokenizer, model = load_tamil_model()
             
-            if not model or not tokenizer:
+            if model is None or tokenizer is None:
                 return jsonify({"error": "Tamil model not loaded"}), 503
+
+            assert tokenizer is not None
+            assert model is not None
 
             # Input prep for IndicBART (It often requires <lang> tags if multilingual, 
             # but user prompt says: f"<ta> {text} </ta>")
@@ -174,7 +177,7 @@ def voice_summary():
         filepath = os.path.join("static", filename)
         
         # Ensure nltk punkt tokenizer is available for splitting sentences
-        import nltk
+        import nltk  # type: ignore
         try:
             nltk.data.find('tokenizers/punkt_tab')
         except LookupError:
