@@ -230,7 +230,7 @@
         }
 
         /* Responsive */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .doc-title {
                 display: none;
             }
@@ -239,6 +239,49 @@
                 left: 10px;
                 right: 10px;
                 width: auto;
+            }
+
+            .toolbar {
+                height: auto;
+                flex-wrap: wrap;
+                padding: 10px;
+                gap: 10px;
+                justify-content: center;
+            }
+
+            .toolbar-group {
+                gap: 0.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .btn-label {
+                display: none;
+            }
+
+            .btn-text-icon {
+                padding: 8px; /* Square buttons */
+            }
+
+            .summary-panel, .doubt-panel {
+                width: calc(100% - 20px);
+                right: 10px;
+                left: 10px;
+                max-width: none;
+                top: auto;
+                bottom: 10px;
+                max-height: 50vh;
+            }
+
+            .ai-bot-wrapper {
+                bottom: 20px;
+                right: 20px;
+                transform: scale(0.6);
+                transform-origin: bottom right;
+            }
+
+            .ai-bot-wrapper:hover {
+                transform: scale(0.65);
             }
         }
 
@@ -359,6 +402,333 @@
             color: white;
             border: 1px solid #9f8cff;
         }
+
+        /* AI Assistant Bot Styles */
+        .ai-bot-wrapper {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 1000;
+            cursor: pointer;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));
+            transition: transform 0.3s ease;
+        }
+
+        .ai-bot-wrapper:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes realisticFloat {
+            0% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-12px) rotate(2deg); }
+            66% { transform: translateY(-6px) rotate(-1deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .bot {
+            width: 140px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            animation: realisticFloat 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        /* Antennas */
+        .bot-antennas {
+            display: flex;
+            justify-content: space-between;
+            width: 65px;
+            margin-bottom: -5px;
+            z-index: 1;
+        }
+        .bot-antenna {
+            width: 8px;
+            height: 22px;
+            background: linear-gradient(to top, #ffffff, #d8b4fe);
+            border-radius: 4px;
+            position: relative;
+            box-shadow: inset -2px -2px 4px rgba(168, 85, 247, 0.4);
+        }
+        .bot-antenna::after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -1px;
+            width: 10px;
+            height: 10px;
+            background: #a855f7;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #22d3ee, inset 1px 1px 2px #fff;
+        }
+
+        /* Head */
+        .bot-head {
+            width: 135px;
+            height: 95px;
+            background: linear-gradient(135deg, #ffffff 0%, #e9d5ff 100%);
+            border-radius: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset -5px -5px 12px rgba(168, 85, 247, 0.2), 0 8px 20px rgba(0,0,0,0.25), inset 2px 2px 8px #fff;
+            position: relative;
+            z-index: 3;
+            /* Side rounded ears */
+            border-left: 10px solid #d8b4fe;
+            border-right: 10px solid #d8b4fe;
+        }
+
+        /* Screen (Cyan Rim) */
+        .bot-screen {
+            width: 100px;
+            height: 60px;
+            background: linear-gradient(180deg, #1f2937, #111827);
+            border-radius: 18px;
+            border: 3px solid #67e8f9;
+            box-shadow: 0 0 15px #22d3ee, inset 0 0 25px rgba(34, 211, 238, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes botBlink {
+            0%, 94%, 100% { transform: scaleY(1); }
+            97% { transform: scaleY(0.1); }
+        }
+
+        /* Eyes */
+        .eyes {
+            display: flex;
+            gap: 20px;
+            animation: botBlink 4s infinite;
+            margin-top: -5px;
+            position: relative;
+        }
+        .eye {
+            width: 25px;
+            height: 25px;
+            background: #000;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: inset -2px -2px 4px rgba(255,255,255,0.2), 0 0 8px #000;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* Pink neon pupil */
+        .eye::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border: 3px solid transparent;
+            border-left-color: #f472b6;
+            border-top-color: #f472b6;
+            border-radius: 50%;
+            transform: rotate(-45deg) translate(-1px, 1px);
+            box-shadow: inset 2px 2px 6px #ec4899;
+            filter: drop-shadow(0 0 4px #ec4899);
+        }
+
+        /* Smile */
+        .smile {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 6px;
+            border-bottom: 2px solid #ddd;
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* Body & Arms Section */
+        .bot-lower {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            margin-top: -10px;
+            width: 100%;
+        }
+        
+        .bot-body {
+            width: 80px;
+            height: 65px;
+            background: linear-gradient(to bottom, #f3e8ff, #ffffff);
+            border-radius: 25px;
+            box-shadow: inset -4px -4px 10px rgba(168, 85, 247, 0.3), inset 2px 2px 5px #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Purple Collar */
+        .bot-body::before {
+            content: '';
+            width: 60px;
+            height: 12px;
+            background: linear-gradient(to right, #a855f7, #c084fc);
+            border-radius: 0 0 10px 10px;
+            margin-bottom: 8px;
+            box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Body Glowing Slit */
+        .bot-body-slit {
+            width: 28px;
+            height: 6px;
+            background: #22d3ee;
+            border-radius: 10px;
+            box-shadow: 0 0 12px #22d3ee, inset 0 0 4px #fff;
+        }
+
+        /* Arms */
+        @keyframes swingArmLeft { 0%, 100% { transform: rotate(15deg); } 50% { transform: rotate(30deg); } }
+        @keyframes swingArmRight { 0%, 100% { transform: rotate(-15deg); } 50% { transform: rotate(-30deg); } }
+        
+        .arm {
+            width: 28px;
+            height: 60px;
+            background: linear-gradient(to bottom, #e9d5ff, #ffffff);
+            border-radius: 14px;
+            position: absolute;
+            top: 5px;
+            transform-origin: top center;
+            z-index: 1;
+            box-shadow: inset -3px -3px 8px rgba(168, 85, 247, 0.3), 0 5px 10px rgba(0,0,0,0.15);
+            /* Glowing hands */
+            border-bottom: 8px solid #22d3ee;
+        }
+        .arm.left {
+            left: 10px;
+            animation: swingArmLeft 2s infinite ease-in-out;
+            transform: rotate(20deg);
+        }
+        .arm.right {
+            right: 10px;
+            animation: swingArmRight 2s infinite ease-in-out;
+            transform: rotate(-20deg);
+        }
+
+        /* Legs */
+        .legs {
+            display: flex;
+            gap: 16px;
+            margin-top: -12px;
+            z-index: 1;
+        }
+        .leg {
+            width: 28px;
+            height: 38px;
+            background: linear-gradient(to bottom, #d8b4fe, #ffffff);
+            border-radius: 10px 10px 15px 15px;
+            box-shadow: inset -3px 0 6px rgba(168, 85, 247, 0.3), 0 5px 8px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        /* Glowing shoes */
+        .leg::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: #22d3ee;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 0 10px #22d3ee;
+        }
+
+        /* --- SPEAKING ANIMATIONS --- */
+        @keyframes botTalk {
+            0% { height: 6px; border-radius: 0 0 12px 12px; background: transparent; border-bottom: 2px solid #ddd; }
+            50% { height: 16px; width: 18px; border-radius: 8px 8px 14px 14px; background: rgba(34, 211, 238, 0.4); border-bottom: 2px solid #22d3ee; }
+            100% { height: 4px; border-radius: 0 0 10px 10px; background: transparent; border-bottom: 2px solid #ddd; }
+        }
+
+        .ai-bot-wrapper.speaking .smile {
+            animation: botTalk 0.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes swingArmLeftTalk { 
+            0% { transform: rotate(15deg) translateY(0); } 
+            30% { transform: rotate(70deg) translateY(-8px); } 
+            60% { transform: rotate(45deg) translateY(-4px); } 
+            100% { transform: rotate(15deg) translateY(0); } 
+        }
+        @keyframes swingArmRightTalk { 
+            0% { transform: rotate(-15deg) translateY(0); } 
+            40% { transform: rotate(-65deg) translateY(-6px); } 
+            70% { transform: rotate(-35deg) translateY(-2px); } 
+            100% { transform: rotate(-15deg) translateY(0); } 
+        }
+
+        .ai-bot-wrapper.speaking .arm.left {
+            animation: swingArmLeftTalk 1.8s infinite ease-in-out;
+        }
+        .ai-bot-wrapper.speaking .arm.right {
+            animation: swingArmRightTalk 2.2s infinite ease-in-out;
+            animation-delay: 0.4s;
+        }
+
+        .ai-bot-wrapper.speaking .bot {
+            animation: realisticFloat 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; /* More energetic bobbing */
+        }
+
+        /* --- DOUBT PANEL STYLES --- */
+        .btn-ask-custom {
+            background: rgba(34,211,238,0.1);
+            color: #22d3ee;
+            border: 1px solid rgba(34,211,238,0.2);
+        }
+        .btn-ask-icon {
+            margin-right: 4px;
+        }
+        .doubt-chat-history {
+            height: calc(100% - 130px);
+            margin-bottom: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .doubt-intro-text {
+            text-align: center;
+            padding: 1rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        .doubt-input-area {
+            padding: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            background: #1e1e2d;
+            display: flex;
+            gap: 10px;
+        }
+        .doubt-input {
+            flex: 1;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: #151521;
+            color: white;
+            outline: none;
+        }
+        .doubt-send-btn {
+            padding: 10px 15px;
+            background: #22d3ee;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -389,7 +759,12 @@
                     <circle cx="11" cy="11" r="8" />
                     <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
-                Search
+                <span class="btn-label">Search</span>
+            </button>
+
+            <!-- Ask Doubt Button -->
+            <button class="btn-text-icon btn-ask-custom" id="btn-ask" onclick="toggleDoubtPanel()" title="Ask anything from this page">
+                <span class="btn-ask-icon">🤖</span> <span class="btn-label">Ask Doubt</span>
             </button>
 
             <!-- Summarize Button (New) -->
@@ -402,7 +777,7 @@
                     <line x1="16" y1="17" x2="8" y2="17"></line>
                     <polyline points="10 9 9 9 8 9"></polyline>
                 </svg>
-                Summary
+                <span class="btn-label">Summary</span>
             </button>
 
             <!-- Summarize Page Button (Converted to Toggle) -->
@@ -411,17 +786,17 @@
                     <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
                     <line x1="9" y1="15" x2="15" y2="15"></line>
                 </svg>
-                Page Only
+                <span class="btn-label">Page Only</span>
             </button>
 
             <!-- Stop Voice Button -->
-            <button class="btn-text-icon" onclick="window.speechSynthesis.cancel()" title="Stop Voice Narration">
+            <button class="btn-text-icon" onclick="stopVoice()" title="Stop Voice Narration">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                     <line x1="23" y1="9" x2="17" y2="15"></line>
                     <line x1="17" y1="9" x2="23" y2="15"></line>
                 </svg>
-                Stop Voice
+                <span class="btn-label">Stop Voice</span>
             </button>
         </div>
     </div>
@@ -455,12 +830,70 @@
         <div id="summary-content" class="summary-content">
             <!-- Content will be injected here -->
         </div>
+    </div>
 
+    <!-- Doubt Panel -->
+    <div id="doubt-panel" class="summary-panel doubt-panel">
+        <div class="summary-header">
+            <div class="summary-title">
+                <span>🤖 Ask Doubt</span>
+            </div>
+            <button class="summary-close" onclick="toggleDoubtPanel()">✕</button>
+        </div>
+        
+        <div id="doubt-chat-history" class="summary-content doubt-chat-history">
+            <div class="doubt-intro-text">
+                <p>Hello! I am your Context-Aware Tutor for this page.</p>
+                <p>Ask me anything from <b>Page <span id="doubt-pg-num">1</span></b>!</p>
+            </div>
+        </div>
+
+        <div class="doubt-input-area">
+            <input type="text" id="doubt-input" class="doubt-input" placeholder="Why did the seagull fail..." onkeypress="if(event.key === 'Enter') sendDoubt()" />
+            <button onclick="sendDoubt()" class="doubt-send-btn">Ask</button>
+        </div>
     </div>
 
     <div id="viewer-container">
         <div class="loader" id="loader">Loading PDF...</div>
         <div id="pdf-wrapper"></div>
+    </div>
+
+    <!-- AI Assistant Bot (Realistic 3D Style) -->
+    <div class="ai-bot-wrapper" id="ai-bot" title="Need help? Click Summarize above!" onclick="toggleSummarize()">
+        <div class="bot">
+            <!-- Antennas -->
+            <div class="bot-antennas">
+                <div class="bot-antenna"></div>
+                <div class="bot-antenna"></div>
+            </div>
+            <!-- Head -->
+            <div class="bot-head">
+                <!-- Glowing Cyan Screen -->
+                <div class="bot-screen">
+                    <div class="eyes">
+                        <div class="eye"></div>
+                        <div class="eye"></div>
+                    </div>
+                    <div class="smile"></div>
+                </div>
+            </div>
+            
+            <!-- Lower Section: Body & Arms -->
+            <div class="bot-lower">
+                <div class="arm left"></div>
+                <div class="bot-body">
+                    <div class="bot-body-slit"></div>
+                </div>
+                <div class="arm right"></div>
+            </div>
+            
+            <!-- Legs -->
+            <div class="legs">
+                <div class="leg left"></div>
+                <div class="leg right"></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -470,7 +903,7 @@
             pageNum: 1,
             pageRendering: false,
             pageNumPending: null,
-            scale: 1.5,
+            scale: window.innerWidth < 768 ? 0.8 : 1.5,
             textContent: [], // Cache text content for search
             searchResults: [], // { page: 1, text: "..." }
             currentMatchIndex: 0,
@@ -783,12 +1216,24 @@
             // Stop previous speech
             if (currentUtterance) {
                 window.speechSynthesis.cancel();
+                document.getElementById('ai-bot').classList.remove('speaking');
             }
 
             currentUtterance = new SpeechSynthesisUtterance(text);
             currentUtterance.lang = "ta-IN";
             currentUtterance.rate = 1;
             currentUtterance.pitch = 1;
+
+            // Animate Bot while speaking
+            currentUtterance.onstart = () => {
+                document.getElementById('ai-bot').classList.add('speaking');
+            };
+            currentUtterance.onend = () => {
+                document.getElementById('ai-bot').classList.remove('speaking');
+            };
+            currentUtterance.onerror = () => {
+                document.getElementById('ai-bot').classList.remove('speaking');
+            };
 
             // Attempt to select a Tamil voice if available
             const voices = window.speechSynthesis.getVoices();
@@ -798,6 +1243,76 @@
             }
 
             window.speechSynthesis.speak(currentUtterance);
+        }
+
+        // Global manual stop button binding
+        function stopVoice() {
+            window.speechSynthesis.cancel();
+            document.getElementById('ai-bot').classList.remove('speaking');
+            currentUtterance = null;
+        }
+
+        /* --- ASK DOUBT / TUTOR FEATURE --- */
+        
+        function toggleDoubtPanel() {
+            const panel = document.getElementById('doubt-panel');
+            if (panel.classList.contains('active')) {
+                panel.classList.remove('active');
+            } else {
+                panel.classList.add('active');
+                document.getElementById('doubt-pg-num').innerText = state.pageNum;
+            }
+        }
+
+        async function sendDoubt() {
+            const inputField = document.getElementById('doubt-input');
+            const chatHistory = document.getElementById('doubt-chat-history');
+            const question = inputField.value.trim();
+
+            if (!question) return;
+
+            // Add User Question to Chat
+            const userBubble = document.createElement('div');
+            userBubble.style.cssText = "background: #22d3ee; color: #000; padding: 10px; border-radius: 12px 12px 0 12px; margin: 10px 0 10px auto; max-width: 85%; align-self: flex-end;";
+            userBubble.innerText = question;
+            chatHistory.appendChild(userBubble);
+            
+            // Scroll to bottom and clear input
+            inputField.value = '';
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            // Add Bot "Typing" indicator
+            const botBubble = document.createElement('div');
+            botBubble.style.cssText = "background: rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 12px 12px 12px 0; margin: 10px auto 10px 0; max-width: 85%; align-self: flex-start;";
+            botBubble.innerHTML = "<i>Thinking...</i>";
+            chatHistory.appendChild(botBubble);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            // Make API Call
+            try {
+                // Ensure page logic exists, wait until text is available
+                const pageText = await extractCurrentPageText(); 
+
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: question, context: pageText })
+                });
+
+                const data = await response.json();
+                botBubble.innerHTML = data.success ? data.answer.replace(/\\n/g, '<br>') : "Sorry, I ran into an error generating an answer.";
+                
+                // Read text using bot voice
+                if(data.success) {
+                    readText(data.answer);
+                }
+
+            } catch (err) {
+                console.error(err);
+                botBubble.innerHTML = "Connection Error. Please try again later.";
+            }
+
+            chatHistory.scrollTop = chatHistory.scrollHeight;
         }
 
         /* --- SUMMARIZE FEATURE --- */
@@ -812,7 +1327,7 @@
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
-                    Page Only ✓
+                    <span class="btn-label">Page Only ✓</span>
                 `;
             } else {
                 btn.classList.remove("active");
@@ -821,7 +1336,7 @@
                         <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
                         <line x1="9" y1="15" x2="15" y2="15"></line>
                     </svg>
-                    Page Only
+                    <span class="btn-label">Page Only</span>
                 `;
             }
         }

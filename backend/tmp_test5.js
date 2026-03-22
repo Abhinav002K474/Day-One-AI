@@ -1,0 +1,1 @@
+const db = require('./db'); async function test() { const [r] = await db.query('SELECT id, title, class, status, date, start_time, end_time FROM assessments'); console.log(JSON.stringify(r, null, 2)); process.exit(); } test();

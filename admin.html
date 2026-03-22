@@ -286,6 +286,34 @@
             color: white;
             font-weight: 500;
         }
+
+        /* MOBILE SUPPORTED FORMAT */
+        @media (max-width: 768px) {
+            .admin-auth-container, .admin-panel-container {
+                padding: 1rem;
+                margin: 10px;
+                border-radius: 12px;
+                width: calc(100% - 20px);
+            }
+            .admin-nav {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            .grid-2-gap-15 {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+            .sub-tabs {
+                flex-wrap: wrap;
+            }
+            .user-table-container {
+                overflow-x: auto;
+            }
+            .admin-title {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 

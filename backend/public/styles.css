@@ -65,6 +65,10 @@
             display: none !important;
         }
 
+        .mt-2rem {
+            margin-top: 2rem;
+        }
+
         .flex-center {
             display: flex;
             align-items: center;
@@ -6760,11 +6764,17 @@
         }
 
         /* Refactored Inline Styles - Batch 11 */
-        .auth-desc {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
+        .auth-subtitle {
+            color: var(--text-body);
+            font-size: 1rem;
+            margin-bottom: 2rem;
             text-align: center;
+        }
+
+        .auth-divider {
+            border: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 15px 0;
         }
 
         .auth-info-text {
@@ -8366,3 +8376,240 @@
             color: #fbbf24;
             min-height: 1.2em;
         }
+
+        /* ===== Floating Math Background ===== */
+
+        .math-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .math-symbol {
+            position: absolute;
+            font-size: 80px;
+            font-weight: bold;
+            color: rgba(155, 100, 255, 0.08);
+            animation: float 20s infinite ease-in-out alternate;
+            transition: transform 0.3s ease;
+            pointer-events: auto;
+        }
+
+        .math-symbol:hover {
+            transform: scale(1.3);
+            color: rgba(155, 100, 255, 0.2);
+        }
+
+        /* Random Positions */
+        .math-symbol:nth-child(1) {
+            top: 10%;
+            left: 15%;
+        }
+
+        .math-symbol:nth-child(2) {
+            top: 60%;
+            left: 80%;
+        }
+
+        .math-symbol:nth-child(3) {
+            top: 30%;
+            left: 60%;
+        }
+
+        .math-symbol:nth-child(4) {
+            top: 75%;
+            left: 25%;
+        }
+
+        .math-symbol:nth-child(5) {
+            top: 50%;
+            left: 40%;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            100% {
+                transform: translateY(-40px);
+            }
+        }
+/* --- Fix Profile Modal Avatars --- */
+.avatar-item {
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.avatar-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease;
+    margin-bottom: 8px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.avatar-item:hover {
+    transform: scale(1.05);
+}
+.avatar-item:hover img {
+    border-color: #3b82f6;
+}
+.avatar-item span {
+    font-size: 0.85rem;       
+    color: #9ca3af;
+    display: block;
+}
+
+/* ========================================================= */
+/* TOTAL PROJECT MOBILE SUPPORTED FORMAT OVERRIDES */
+/* ========================================================= */
+@media (max-width: 768px) {
+    /* General Fixes */
+    body {
+        overflow-x: hidden;
+    }
+
+    /* Main Dashboard Layout */
+    .dashboard-workspace {
+        padding: 1rem;
+        margin-right: 0;
+        margin-bottom: 75px; /* Important space for the new bottom nav */
+        min-height: calc(100vh - 160px);
+    }
+
+    #home-screen.active,
+    .teacher-main-layout, 
+    .action-card-grid,
+    .role-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1.5rem !important;
+    }
+
+    .dashboard-header {
+        padding: 1rem;
+        margin-right: 0;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .header-user-name-style {
+        font-size: 1.1rem;
+    }
+
+    .profile-section {
+        gap: 0.5rem;
+    }
+
+    .search-container input.active {
+        width: 140px; /* smaller search box */
+    }
+
+    /* Floating Auth Details */
+    .auth-card {
+        padding: 1.5rem;
+        margin: 10px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .auth-title {
+        font-size: 1.8rem;
+    }
+
+    /* Transform Vertical Sidebar to Bottom Navigation */
+    .side-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        width: 100%;
+        height: 70px;
+        flex-direction: row;
+        padding: 0.5rem;
+        align-items: center;
+        justify-content: space-around;
+        border-left: none;
+        border-top: 1px solid var(--card-border);
+        background: rgba(21, 21, 26, 0.98);
+        border-radius: 20px 20px 0 0;
+        z-index: 2000;
+        box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Shrink the nav items for mobile */
+    .nav-item {
+        width: 45px;
+        height: 45px;
+        margin: 0;
+    }
+
+    /* Remove the weird right-edge active indicator */
+    .nav-item::before, .nav-item.active::before {
+        display: none !important;
+    }
+
+    /* Slide up active item slightly */
+    .nav-item.active {
+        transform: translateY(-8px) scale(1.1);
+        box-shadow: 0 10px 20px rgba(167, 139, 250, 0.4);
+    }
+
+    /* Hide the tooltips since there's no hover */
+    .nav-item::after {
+        display: none !important;
+    }
+
+    /* Fix Custom Roadmap */
+    .roadmap-card {
+        overflow-x: auto;
+        padding-bottom: 2rem;
+    }
+
+    .materials-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 1rem;
+    }
+
+    .material-icon {
+        padding: 1rem;
+    }
+
+    .material-icon-lg {
+        font-size: 2rem;
+    }
+
+    /* Fix floating chat window sizes */
+    #doubt-panel,
+    #summary-panel {
+        width: calc(100% - 20px);
+        bottom: 15px;
+        top: auto;
+        left: 10px;
+        max-height: 50vh;
+    }
+}
+
+/* Smallphones */
+@media (max-width: 480px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .profile-section {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+}

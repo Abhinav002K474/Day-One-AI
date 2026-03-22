@@ -230,7 +230,7 @@
         }
 
         /* Responsive */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .doc-title {
                 display: none;
             }
@@ -239,6 +239,49 @@
                 left: 10px;
                 right: 10px;
                 width: auto;
+            }
+
+            .toolbar {
+                height: auto;
+                flex-wrap: wrap;
+                padding: 10px;
+                gap: 10px;
+                justify-content: center;
+            }
+
+            .toolbar-group {
+                gap: 0.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .btn-label {
+                display: none;
+            }
+
+            .btn-text-icon {
+                padding: 8px; /* Square buttons */
+            }
+
+            .summary-panel, .doubt-panel {
+                width: calc(100% - 20px);
+                right: 10px;
+                left: 10px;
+                max-width: none;
+                top: auto;
+                bottom: 10px;
+                max-height: 50vh;
+            }
+
+            .ai-bot-wrapper {
+                bottom: 20px;
+                right: 20px;
+                transform: scale(0.6);
+                transform-origin: bottom right;
+            }
+
+            .ai-bot-wrapper:hover {
+                transform: scale(0.65);
             }
         }
 
@@ -716,12 +759,12 @@
                     <circle cx="11" cy="11" r="8" />
                     <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
-                Search
+                <span class="btn-label">Search</span>
             </button>
 
             <!-- Ask Doubt Button -->
             <button class="btn-text-icon btn-ask-custom" id="btn-ask" onclick="toggleDoubtPanel()" title="Ask anything from this page">
-                <span class="btn-ask-icon">🤖</span> Ask Doubt
+                <span class="btn-ask-icon">🤖</span> <span class="btn-label">Ask Doubt</span>
             </button>
 
             <!-- Summarize Button (New) -->
@@ -734,7 +777,7 @@
                     <line x1="16" y1="17" x2="8" y2="17"></line>
                     <polyline points="10 9 9 9 8 9"></polyline>
                 </svg>
-                Summary
+                <span class="btn-label">Summary</span>
             </button>
 
             <!-- Summarize Page Button (Converted to Toggle) -->
@@ -743,7 +786,7 @@
                     <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
                     <line x1="9" y1="15" x2="15" y2="15"></line>
                 </svg>
-                Page Only
+                <span class="btn-label">Page Only</span>
             </button>
 
             <!-- Stop Voice Button -->
@@ -753,7 +796,7 @@
                     <line x1="23" y1="9" x2="17" y2="15"></line>
                     <line x1="17" y1="9" x2="23" y2="15"></line>
                 </svg>
-                Stop Voice
+                <span class="btn-label">Stop Voice</span>
             </button>
         </div>
     </div>
@@ -860,7 +903,7 @@
             pageNum: 1,
             pageRendering: false,
             pageNumPending: null,
-            scale: 1.5,
+            scale: window.innerWidth < 768 ? 0.8 : 1.5,
             textContent: [], // Cache text content for search
             searchResults: [], // { page: 1, text: "..." }
             currentMatchIndex: 0,
@@ -1284,7 +1327,7 @@
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
-                    Page Only ✓
+                    <span class="btn-label">Page Only ✓</span>
                 `;
             } else {
                 btn.classList.remove("active");
@@ -1293,7 +1336,7 @@
                         <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
                         <line x1="9" y1="15" x2="15" y2="15"></line>
                     </svg>
-                    Page Only
+                    <span class="btn-label">Page Only</span>
                 `;
             }
         }

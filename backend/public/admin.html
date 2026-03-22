@@ -286,6 +286,34 @@
             color: white;
             font-weight: 500;
         }
+
+        /* MOBILE SUPPORTED FORMAT */
+        @media (max-width: 768px) {
+            .admin-auth-container, .admin-panel-container {
+                padding: 1rem;
+                margin: 10px;
+                border-radius: 12px;
+                width: calc(100% - 20px);
+            }
+            .admin-nav {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            .grid-2-gap-15 {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+            .sub-tabs {
+                flex-wrap: wrap;
+            }
+            .user-table-container {
+                overflow-x: auto;
+            }
+            .admin-title {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 
@@ -539,15 +567,55 @@
                 formData.append('uploadedBy', 'admin_dashboard');
 
                 try {
-                    const response = await fetch('/api/admin/study-material/upload', {
+                    // STEP 1: Ask backend for a Supabase Signed Upload URL (payload: ~1KB, passes Vercel)
+                    const urlRes = await fetch('/api/admin/study-material/get-upload-url', {
                         method: 'POST',
                         headers: {
-                            'X-User-Role': 'admin' // Auth Header
+                            'Content-Type': 'application/json',
+                            'X-User-Role': 'admin'
                         },
-                        body: formData
+                        body: JSON.stringify({ fileName: file.name })
                     });
 
-                    const result = await response.json();
+                    if (!urlRes.ok) {
+                        const err = await urlRes.text();
+                        throw new Error("Failed to get secure upload URL: " + err);
+                    }
+
+                    const { signedUrl, path } = await urlRes.json();
+
+                    // STEP 2: Upload the 60MB PDF directly to Supabase from the Browser! (Bypasses Vercel completely!)
+                    btn.textContent = "Uploading to Cloud (0%)...";
+                    const uploadRes = await fetch(signedUrl, {
+                        method: 'PUT',
+                        body: file,
+                        headers: {
+                            'Content-Type': file.type
+                        }
+                    });
+
+                    if (!uploadRes.ok) {
+                        throw new Error("Failed to upload to Supabase.");
+                    }
+
+                    // STEP 3: Tell backend to save the metadata pointing to the Supabase file
+                    btn.textContent = "Saving metadata...";
+                    const confirmRes = await fetch('/api/admin/study-material/confirm-upload', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-User-Role': 'admin'
+                        },
+                        body: JSON.stringify({
+                            class: classVal,
+                            subject: subjectVal,
+                            title: titleVal,
+                            fileName: file.name,
+                            path: path
+                        })
+                    });
+
+                    const result = await confirmRes.json();
 
                     status.classList.remove('hidden');
                     if (result.success) {

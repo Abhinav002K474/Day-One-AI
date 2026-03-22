@@ -173,6 +173,31 @@
         .contact-info p {
             margin-bottom: 5px;
         }
+
+        /* MOBILE SUPPORTED FORMAT */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+                text-align: center;
+            }
+            .nav-actions {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .nav-actions a {
+                margin: 0;
+            }
+            .hero h1 { font-size: 36px; }
+            .hero p { font-size: 16px; }
+            .section { padding: 50px 20px; }
+            .section h2 { font-size: 30px; }
+            .cards { grid-template-columns: 1fr; }
+            footer { padding: 40px 20px; }
+        }
     </style>
 </head>
 

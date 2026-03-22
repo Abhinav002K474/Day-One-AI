@@ -184,10 +184,10 @@ router.get('/student/assessments', async (req, res) => {
         const [results] = await db.query(sql, [studentClass, studentClass + '%']);
 
         console.log(
-            "Student class used for fetch:",
-            studentClass,
-            "| Loaded:",
-            results.length
+            "----- API FETCH CALLED -----",
+            "\nStudent Class URL param:", studentClass,
+            "\nResults length:", results.length,
+            "\nResults data:", JSON.stringify(results).substring(0, 100) + "..."
         );
 
         res.json(results);
