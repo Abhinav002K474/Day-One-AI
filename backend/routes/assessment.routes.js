@@ -170,15 +170,18 @@ router.get('/student/assessments', async (req, res) => {
         const sql = `
             SELECT *
             FROM assessments
-            WHERE class = ?
-              AND status = 'published'
+            WHERE (
+                class = ? OR 
+                REPLACE(REPLACE(UPPER(class), 'CLASS ', ''), ' - ', '') = ?
+            )
+              AND LOWER(status) = 'published'
               AND date IS NOT NULL
               AND start_time IS NOT NULL
               AND end_time IS NOT NULL
             ORDER BY date, start_time
         `;
 
-        const [results] = await db.query(sql, [studentClass]);
+        const [results] = await db.query(sql, [studentClass, studentClass]);
 
         console.log(
             "Student class used for fetch:",
