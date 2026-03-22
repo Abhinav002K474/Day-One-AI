@@ -3696,10 +3696,10 @@
                     const navItem = document.querySelector('.nav-item[data-label="Assessment"]');
                     if (navItem) navItem.classList.add('active');
 
-                    // 4. Load Data
-                    // 4. Load Data - NO FETCH HERE, reliance on window load or manual refresh if needed
-                    // this.fetchAssessments();
-
+                    // 4. Load Data dynamically to ensure it's fresh after login
+                    if (typeof fetchAssessments === 'function') {
+                        fetchAssessments();
+                    }
                 } catch (e) {
                     console.error("Error opening assessments:", e);
                 }
