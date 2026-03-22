@@ -127,19 +127,21 @@ router.post('/teacher/assessments/create', async (req, res) => {
         }
 
         const [result] = await db.query(
-            "INSERT INTO assessments (title, subject, class, duration_minutes, status, teacher_id, date, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO assessments (title, subject, class, duration_minutes, status, teacher_id, date, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id",
             [title, subject, classLevel, duration || 30, status || 'DRAFT', teacherId, date, startTime, endTime]
         );
-        const assessmentId = result.insertId;
+        const assessmentId = result && result.length > 0 ? result[0].id : null;
+
+        if (!assessmentId) throw new Error("Failed to insert assessment.");
 
         // 2. Link Questions
         if (Array.isArray(questions) && questions.length > 0) {
-            const values = questions.map(q => {
-                // Robustly handle if q is just ID or Object {questionId: 1...}
+            // PostgreSQL doesn't support MySQL's nested array bulk insert using 'VALUES ?'
+            // So we insert them iteratively or construct a flat VALUES clause. Iteration is safer.
+            for (let q of questions) {
                 const qId = (typeof q === 'object' && q !== null && q.questionId) ? q.questionId : q;
-                return [assessmentId, qId];
-            });
-            await db.query("INSERT INTO assessment_questions (assessment_id, question_id) VALUES ?", [values]);
+                await db.query("INSERT INTO assessment_questions (assessment_id, question_id) VALUES (?, ?)", [assessmentId, qId]);
+            }
         }
 
         res.json({ success: true, assessmentId, message: "Draft Assessment Created" });
