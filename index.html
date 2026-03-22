@@ -3488,10 +3488,12 @@
                 try {
                     // Detect if input is email or phone
                     const isEmail = contact.includes('@');
+                    const classSelect = document.getElementById('signup-grade');
                     const payload = {
                         name: name,
                         password: pass,
-                        role: role
+                        role: role,
+                        class: (role === 'student' && classSelect) ? classSelect.value : null
                     };
 
                     if (isEmail) payload.email = contact;
