@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -216,8 +216,8 @@
 
         <!-- Signup Card -->
         <div id="signup-card" class="auth-card hidden signup-card-anim">
-            <h2>Join Now</h2>
-            <p>Create your student profile.</p>
+            <h2 id="signup-card-title">Join Now</h2>
+            <p id="signup-card-subtitle">Create your student profile.</p>
             <form id="signup-form">
                 <!-- 1. Full Name -->
                 <div class="input-group">
@@ -3178,6 +3178,20 @@
                         signupCard.style.transform = 'translateY(0)';
                     }, 50);
 
+                    // Update signup card title & subtitle based on role
+                    const signupTitle = document.getElementById('signup-card-title');
+                    const signupSubtitle = document.getElementById('signup-card-subtitle');
+                    if (this.selectedRole === 'teacher') {
+                        if (signupTitle) signupTitle.textContent = 'Create Teacher Account';
+                        if (signupSubtitle) signupSubtitle.textContent = 'Set up your teacher profile.';
+                    } else if (this.selectedRole === 'parent') {
+                        if (signupTitle) signupTitle.textContent = 'Parent Registration';
+                        if (signupSubtitle) signupSubtitle.textContent = 'Create your parent account.';
+                    } else {
+                        if (signupTitle) signupTitle.textContent = 'Join Now';
+                        if (signupSubtitle) signupSubtitle.textContent = 'Create your student profile.';
+                    }
+
                     // Toggle Parent Fields
                     const parentFields = document.getElementById('signup-fields-parent');
                     if (this.selectedRole === 'parent') {
@@ -3420,7 +3434,7 @@
 
             async handleSignup(e) {
                 e.preventDefault();
-                const role = localStorage.getItem('user_role') || 'student';
+                const role = this.selectedRole || 'student';
                 const name = document.getElementById('signup-name').value.trim();
                 const contact = document.getElementById('signup-contact').value.trim();
                 const pass = document.getElementById('signup-pass').value.trim();

@@ -31,10 +31,28 @@ const pool = new Pool({
 
 module.exports = {
     query: async (text, params) => {
+        // Auto-convert MySQL-style '?' placeholders to PostgreSQL-style '$1', '$2'
+        // Skip replacement if text already uses '$1' natively.
+        let pgText = text;
+        if (pgText && pgText.includes('?') && !pgText.includes('$1')) {
+            let i = 1;
+            let inString = false;
+            let newText = '';
+            for (let char of pgText) {
+                if (char === "'") inString = !inString;
+                if (char === '?' && !inString) {
+                    newText += '$' + (i++);
+                } else {
+                    newText += char;
+                }
+            }
+            pgText = newText;
+        }
+
         const start = Date.now();
-        const res = await pool.query(text, params);
+        const res = await pool.query(pgText, params);
         const duration = Date.now() - start;
-        // console.log('executed query', { text, duration, rows: res.rowCount });
+        // console.log('executed query', { text: pgText, duration, rows: res.rowCount });
 
         // Return [rows, fields] to match mysql2 signature
         return [res.rows, res.fields];

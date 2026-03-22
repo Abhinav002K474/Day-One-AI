@@ -87,7 +87,7 @@ router.get('/teacher/questions', async (req, res) => {
             params.push(classVal);
         }
 
-        sql += " ORDER BY RAND()"; // Randomize for 'Auto-Add' feel
+        sql += " ORDER BY RANDOM()"; // Randomize for 'Auto-Add' feel
 
         if (limit) {
             sql += " LIMIT ?";

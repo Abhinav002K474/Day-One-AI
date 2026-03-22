@@ -37,7 +37,7 @@ async function insertQuestions(questions) {
         const src = q.source || 'Upload';
 
         try {
-            await db.execute(
+            await db.query(
                 `INSERT INTO question_bank 
                 (class, subject, chapter, question_text, options, correct_option, difficulty, source) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -126,7 +126,7 @@ router.get('/teacher/questions', async (req, res) => {
         }
 
         // Randomize
-        sql += " ORDER BY RAND()";
+        sql += " ORDER BY RANDOM()";
 
         if (limit) {
             sql += " LIMIT ?";
@@ -135,7 +135,7 @@ router.get('/teacher/questions', async (req, res) => {
             sql += " LIMIT 50"; // Default safety
         }
 
-        const [rows] = await db.execute(sql, params);
+        const [rows] = await db.query(sql, params);
         res.json({ success: true, questions: rows });
 
     } catch (err) {
