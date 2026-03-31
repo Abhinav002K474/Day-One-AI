@@ -798,6 +798,19 @@
                 </svg>
                 <span class="btn-label">Stop Voice</span>
             </button>
+
+            <!-- Translate Output Button -->
+            <button class="btn-text-icon" onclick="toggleTranslationPanel()" title="Translate to Tamil">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 8l6 6"></path>
+                    <path d="M4 14l6-6 2-3"></path>
+                    <path d="M2 5h12"></path>
+                    <path d="M7 2h1"></path>
+                    <path d="M22 22l-5-10-5 10"></path>
+                    <path d="M14 18h6"></path>
+                </svg>
+                <span class="btn-label">Tamil</span>
+            </button>
         </div>
     </div>
 
@@ -851,6 +864,19 @@
         <div class="doubt-input-area">
             <input type="text" id="doubt-input" class="doubt-input" placeholder="Why did the seagull fail..." onkeypress="if(event.key === 'Enter') sendDoubt()" />
             <button onclick="sendDoubt()" class="doubt-send-btn">Ask</button>
+        </div>
+    </div>
+
+    <!-- Translation Panel -->
+    <div id="translation-panel" class="summary-panel doubt-panel">
+        <div class="summary-header">
+            <div class="summary-title">
+                <span>🌐 Tamil Translation</span>
+            </div>
+            <button class="summary-close" onclick="toggleTranslationPanel()">✕</button>
+        </div>
+        <div id="translation-content" class="summary-content">
+            <!-- Content will be injected here -->
         </div>
     </div>
 
@@ -1482,6 +1508,98 @@
                 console.error("Text extraction failed:", e);
                 return null;
             }
+        }
+
+        async function toggleTranslationPanel() {
+            const panel = document.getElementById('translation-panel');
+            const content = document.getElementById('translation-content');
+
+            if (panel.classList.contains('active')) {
+                panel.classList.remove('active');
+                return;
+            }
+
+            // Open Panel
+            panel.classList.add('active');
+            
+            // Set Loading UI
+            content.innerHTML = `
+                <div style="text-align:center; padding: 2rem; color: #94a3b8;">
+                    <div style="margin-bottom:10px;">⚡ Translating Page ${state.pageNum} to Tamil...</div>
+                    <div style="font-size:0.8rem;">(This uses Google Gemini AI)</div>
+                </div>
+            `;
+
+            try {
+                const pageText = await extractCurrentPageText();
+
+                if (!pageText || pageText.trim().length < 20) {
+                    content.innerHTML = `<div style="color:#64748b; padding:1rem;">ℹ️ Not enough text on this page to translate.</div>`;
+                    return;
+                }
+
+                const token = localStorage.getItem("token");
+                const response = await fetch("/api/ai/translate", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": token ? `Bearer ${token}` : ""
+                    },
+                    body: JSON.stringify({ text: pageText, targetLanguage: "Tamil" })
+                });
+
+                if (!response.ok) {
+                    throw new Error("API response error");
+                }
+
+                const data = await response.json();
+
+                if (!data || !data.success) {
+                    throw new Error("Translation failed server side");
+                }
+
+                const translatedHTML = data.translatedText.replace(/\n/g, '<br>');
+
+                content.innerHTML = `
+                    <h4 style="color:var(--highlight); margin-bottom:0.5rem;">Page ${state.pageNum} (Tamil)</h4>
+                    <p style="margin-bottom:1rem; font-family: 'Mukta Malar', sans-serif; font-size: 1.05rem; line-height: 1.6;">${translatedHTML}</p>
+                    <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid rgba(255,255,255,0.1);">
+                        <button class="btn-text-icon" style="width:100%; justify-content:center;" onclick="readTamilText(this.parentElement.previousElementSibling.innerText)">
+                            🔊 Listen in Tamil
+                        </button>
+                    </div>
+                `;
+
+            } catch (err) {
+                console.warn("Translation error:", err);
+                content.innerHTML = `<div style="color:#ef4444; padding:1rem;">❌ Translation is temporarily unavailable. Please try again later.</div>`;
+            }
+        }
+        
+        function readTamilText(text) {
+             // Stop previous speech
+            if (currentUtterance) {
+                window.speechSynthesis.cancel();
+                document.getElementById('ai-bot').classList.remove('speaking');
+            }
+            
+            setTimeout(() => {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = "ta-IN";
+                utterance.rate = 0.9;
+                
+                utterance.onstart = () => { document.getElementById('ai-bot').classList.add('speaking'); };
+                utterance.onend = () => { document.getElementById('ai-bot').classList.remove('speaking'); };
+                utterance.onerror = () => { document.getElementById('ai-bot').classList.remove('speaking'); };
+
+                // Get Tamil Voice if available
+                const voices = window.speechSynthesis.getVoices();
+                const tamilVoice = voices.find(v => v.lang.includes('ta') || v.lang.includes('ta-IN'));
+                if(tamilVoice) utterance.voice = tamilVoice;
+                
+                window.speechSynthesis.speak(utterance);
+                currentUtterance = utterance;
+            }, 100);
         }
 
         async function summarizeCurrentPage() {

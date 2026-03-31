@@ -68,4 +68,34 @@ router.post("/summarize", async (req, res) => {
     }
 });
 
+// ✅ POST /api/ai/translate
+router.post("/translate", async (req, res) => {
+    try {
+        const { text, targetLanguage = "Tamil" } = req.body;
+
+        if (!text || text.trim().length === 0) {
+            return res.status(400).json({ success: false, message: "No text provided" });
+        }
+
+        console.log(`[AI Translate] To ${targetLanguage}, text length:`, text.length);
+
+        const prompt = `Translate the following educational text to ${targetLanguage}. Ensure proper grammar and technical accuracy. Keep the original formatting and structure as much as possible.\n\nText:\n${text}`;
+
+        let translatedText;
+        try {
+            translatedText = await generateGeminiReply(prompt);
+        } catch (aiErr) {
+            console.warn("[AI Translate] Gemini unavailable, translation failed", aiErr);
+            return res.status(500).json({ success: false, message: "Translation service unavailable" });
+        }
+
+        console.log(`[AI Translate] ✅ Success for ${targetLanguage}`);
+        res.json({ success: true, translatedText });
+
+    } catch (err) {
+        console.error("[AI Translate] ❌ Error:", err.message);
+        res.status(500).json({ success: false, message: "Translation failed" });
+    }
+});
+
 module.exports = router;
